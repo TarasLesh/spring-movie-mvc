@@ -33,4 +33,29 @@ public class MovieService implements IMovieService {
         }
 
     }
+
+    @Override
+    public void createMovie(Movie movie) {
+        RestTemplate restTemplate = new RestTemplate();  // з допомогою RestTemplate робимо request на інший мікросервіс.
+        String url = "http://localhost:8081/movies/1";  // опис URL  (/1 є бо directorId потрібен)
+
+        HttpHeaders requestHeaders = new HttpHeaders();  // формуємо наші header. Тобто створимо об'єкт requestHeaders
+        String authHeader = "Basic " + Base64.encodeBase64String("myuser:myuser".getBytes()); // закодували наш header (комбінація логін і пароль з basic) в base64. Тобто створимо об'єкт authenticationHeader
+        requestHeaders.add("Authorization", authHeader);  // передати назву нашого header, тобто headerName (Authorization) і сам закодований header
+
+            HttpEntity httpEntity = new HttpEntity(movie, requestHeaders); // передати треба header s body. Головне, щоб на іншому мікросервісі був об'єкт, який прийме той тип, який прийде
+        try {
+            ResponseEntity<Movie> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, Movie.class);
+
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                if (responseEntity.getBody() != null) {
+                    return;
+                }
+            } else {
+                throw new RuntimeException("Error creating movie");  // інакше кидаємо помилку
+            }
+        } catch (Exception ex){
+            throw new RuntimeException(ex.getLocalizedMessage());
+        }
+    }
 }

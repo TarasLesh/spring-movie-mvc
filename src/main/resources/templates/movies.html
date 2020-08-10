@@ -27,5 +27,15 @@
     </tbody>
 </table>
 
+<form method="POST" th:object="${newMovie}" th:action="@{/movie}">
+
+    <input type="text" th:field="*{title}"/>
+    <input type="text" th:field="*{description}"/>
+    <input type="text" th:field="*{duration}"/>
+
+    <input type="submit" value="Create movie">
+
+</form>
+
 </body>
 </html>

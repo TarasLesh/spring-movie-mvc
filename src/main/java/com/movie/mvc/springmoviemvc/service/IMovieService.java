@@ -7,4 +7,6 @@ import java.util.List;
 public interface IMovieService {
 
     List<Movie> getAllMovies();
+
+    void createMovie(Movie movie);
 }
